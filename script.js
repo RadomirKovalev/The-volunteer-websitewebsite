@@ -47,6 +47,11 @@ function showScreen(screenNumber) {
             updateProfileInfo();
             updateChatMessages();
         }
+        
+        // Обновляем чат на главной странице без регистрации
+        if (screenNumber === 7) {
+            updateChatMessages();
+        }
     }
 }
 
@@ -98,6 +103,12 @@ function initializeEventListeners() {
     const rulesCheckbox = document.getElementById('rulesAccepted');
     if (rulesCheckbox) {
         rulesCheckbox.addEventListener('change', validateRules);
+    }
+    
+    // Создание мероприятия без регистрации
+    const guestEventForm = document.getElementById('guestEventForm');
+    if (guestEventForm) {
+        guestEventForm.addEventListener('submit', handleGuestEventCreation);
     }
 }
 
@@ -305,14 +316,18 @@ function updateProfileInfo() {
     
     const profileInfo = document.getElementById('profileInfo');
     if (profileInfo) {
+        const isGuest = userData.isGuest;
+        const guestWarning = isGuest ? '<div class="guest-warning">⚠️ Вы вошли как гость. Для полного доступа рекомендуется пройти регистрацию.</div>' : '';
+        
         profileInfo.innerHTML = `
+            ${guestWarning}
             <div class="profile-item">
                 <span class="profile-label">Имя:</span>
                 <span class="profile-value">${userData.firstName}</span>
             </div>
             <div class="profile-item">
                 <span class="profile-label">Фамилия:</span>
-                <span class="profile-value">${userData.lastName}</span>
+                <span class="profile-value">${userData.lastName || 'Не указана'}</span>
             </div>
             <div class="profile-item">
                 <span class="profile-label">Город:</span>
@@ -348,40 +363,58 @@ function getInterestName(value) {
 // Обновление сообщений чата
 function updateChatMessages() {
     const chatMessages = document.getElementById('chatMessages');
+    const chatMessagesGuest = document.getElementById('chatMessagesGuest');
+    
+    // Показываем последние 10 сообщений
+    const recentMessages = chatMessages.slice(-10);
+    
     if (chatMessages) {
         chatMessages.innerHTML = '';
-        
-        // Показываем последние 10 сообщений
-        const recentMessages = chatMessages.slice(-10);
-        
         recentMessages.forEach(message => {
-            const messageElement = document.createElement('div');
-            messageElement.className = 'chat-message';
-            
-            let icon = '';
-            switch (message.type) {
-                case 'event':
-                    icon = '📅';
-                    break;
-                case 'report':
-                    icon = '📝';
-                    break;
-                case 'system':
-                    icon = '🎉';
-                    break;
-                default:
-                    icon = '💬';
-            }
-            
-            messageElement.innerHTML = `
-                <h4>${icon} ${message.title}</h4>
-                <p>${message.content}</p>
-                <div class="timestamp">${formatDateTime(message.timestamp)}</div>
-            `;
-            
+            const messageElement = createChatMessageElement(message);
             chatMessages.appendChild(messageElement);
         });
     }
+    
+    if (chatMessagesGuest) {
+        chatMessagesGuest.innerHTML = '';
+        recentMessages.forEach(message => {
+            const messageElement = createChatMessageElement(message);
+            chatMessagesGuest.appendChild(messageElement);
+        });
+    }
+}
+
+// Создание элемента сообщения чата
+function createChatMessageElement(message) {
+    const messageElement = document.createElement('div');
+    messageElement.className = 'chat-message';
+    
+    let icon = '';
+    switch (message.type) {
+        case 'event':
+            icon = '📅';
+            break;
+        case 'report':
+            icon = '📝';
+            break;
+        case 'system':
+            icon = '🎉';
+            break;
+        case 'guest_event':
+            icon = '👤📅';
+            break;
+        default:
+            icon = '💬';
+    }
+    
+    messageElement.innerHTML = `
+        <h4>${icon} ${message.title}</h4>
+        <p>${message.content}</p>
+        <div class="timestamp">${formatDateTime(message.timestamp)}</div>
+    `;
+    
+    return messageElement;
 }
 
 // Добавление сообщения в чат
@@ -501,6 +534,56 @@ window.addEventListener('click', function(event) {
         closeEventsModal();
     }
 });
+
+// Обработка создания мероприятия без регистрации
+function handleGuestEventCreation(e) {
+    e.preventDefault();
+    
+    const eventData = {
+        id: Date.now(),
+        goal: document.getElementById('guestEventGoal').value.trim(),
+        participants: document.getElementById('guestEventParticipants').value.trim(),
+        address: document.getElementById('guestEventAddress').value.trim(),
+        peopleCount: document.getElementById('guestEventPeopleCount').value,
+        interest: document.getElementById('guestEventInterest').value,
+        createdAt: new Date().toISOString()
+    };
+    
+    // Проверяем обязательные поля
+    if (!eventData.goal || !eventData.address || !eventData.peopleCount || !eventData.interest) {
+        alert('Пожалуйста, заполните все обязательные поля');
+        return;
+    }
+    
+    // Добавляем мероприятие в список
+    events.push({
+        ...eventData,
+        title: eventData.goal,
+        description: `Цель: ${eventData.goal}. Участники: ${eventData.participants || 'Не указаны'}. Количество людей: ${eventData.peopleCount}`,
+        organizer: 'Гость',
+        city: 'Не указан',
+        dateTime: new Date().toISOString()
+    });
+    
+    saveEvents();
+    
+    // Добавляем сообщение в чат
+    const interestName = getInterestName(eventData.interest);
+    const content = `Цель: ${eventData.goal}. Участники: ${eventData.participants || 'Не указаны'}. Количество людей: ${eventData.peopleCount}. Направление: ${interestName}. Адрес: ${eventData.address}`;
+    addChatMessage('guest_event', eventData.goal, content);
+    
+    // Очищаем форму
+    e.target.reset();
+    
+    // Переходим на главную страницу без регистрации
+    showScreen(7);
+}
+
+// Пропуск регистрации
+function skipRegistration() {
+    // Переходим на главную страницу без регистрации
+    showScreen(7);
+}
 
 // Обработка клавиши Escape
 document.addEventListener('keydown', function(event) {

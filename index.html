@@ -78,6 +78,7 @@
                 </div>
 
                 <button type="submit" class="btn-primary">Готово</button>
+                <button type="button" class="btn-secondary" onclick="skipRegistration()">Без регистрации</button>
             </form>
         </div>
     </div>
@@ -195,6 +196,68 @@
 
                 <button type="submit" class="btn-primary">Готово</button>
                 <button type="button" class="btn-secondary" onclick="showScreen(4)">Назад</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Окно 7 - Главная без регистрации -->
+    <div id="screen7" class="screen">
+        <div class="container">
+            <h2>Соцсеть волонтёров</h2>
+            
+            <div class="action-buttons">
+                <button class="btn-action" onclick="showScreen(2)">
+                    <span class="btn-icon">📝</span>
+                    Регистрация
+                </button>
+                <button class="btn-action" onclick="showScreen(8)">
+                    <span class="btn-icon">📅</span>
+                    Создать мероприятие
+                </button>
+            </div>
+
+            <div class="news-chat">
+                <h3>Общий чат новостей</h3>
+                <div class="chat-messages" id="chatMessagesGuest">
+                    <!-- Сообщения будут загружены через JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Окно 8 - Создание мероприятия без регистрации -->
+    <div id="screen8" class="screen">
+        <div class="container">
+            <h2>Создание мероприятия</h2>
+            <form id="guestEventForm">
+                <div class="form-group">
+                    <input type="text" id="guestEventGoal" placeholder="Цель мероприятия" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="text" id="guestEventParticipants" placeholder="Участники">
+                </div>
+
+                <div class="form-group">
+                    <input type="text" id="guestEventAddress" placeholder="Адрес и геолокация" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="number" id="guestEventPeopleCount" placeholder="Количество людей" min="1" required>
+                </div>
+
+                <div class="form-group">
+                    <select id="guestEventInterest" required>
+                        <option value="">Выберите интерес</option>
+                        <option value="animals">Животные</option>
+                        <option value="ecology">Экология</option>
+                        <option value="health">ЗОЖ</option>
+                        <option value="culture">Культура</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-primary">Готово</button>
+                <button type="button" class="btn-secondary" onclick="showScreen(7)">Назад</button>
             </form>
         </div>
     </div>
