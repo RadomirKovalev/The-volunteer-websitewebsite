@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Соцсеть волонтёров</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Окно 1 - Вступительное -->
+    <div id="screen1" class="screen active">
+        <div class="intro-content">
+            <h1>Соцсеть волонтёров</h1>
+            <p>Организуй благотворительные мероприятия, собирай команду волонтёров в своём городе. Делай добрые дела!</p>
+            <button class="btn-primary" onclick="showScreen(2)">ОКЕЙ</button>
+        </div>
+    </div>
+
+    <!-- Окно 2 - Регистрация -->
+    <div id="screen2" class="screen">
+        <div class="container">
+            <h2>Регистрация</h2>
+            <form id="registrationForm">
+                <div class="avatar-upload">
+                    <label for="avatar">Фото профиля</label>
+                    <input type="file" id="avatar" accept="image/*">
+                    <div class="avatar-preview" id="avatarPreview"></div>
+                </div>
+
+                <div class="form-group">
+                    <input type="text" id="firstName" placeholder="Имя" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="text" id="lastName" placeholder="Фамилия" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="text" id="city" placeholder="Город" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="text" id="organization" placeholder="Организация" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="tel" id="whatsapp" placeholder="Номер телефона WhatsApp" required>
+                </div>
+
+                <div class="interests-section">
+                    <h3>Интересы (выберите минимум 1)</h3>
+                    <div class="interests-grid">
+                        <label class="interest-item">
+                            <input type="checkbox" name="interests" value="animals">
+                            <span>Животные</span>
+                        </label>
+                        <label class="interest-item">
+                            <input type="checkbox" name="interests" value="ecology">
+                            <span>Экология</span>
+                        </label>
+                        <label class="interest-item">
+                            <input type="checkbox" name="interests" value="health">
+                            <span>ЗОЖ</span>
+                        </label>
+                        <label class="interest-item">
+                            <input type="checkbox" name="interests" value="culture">
+                            <span>Культура</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="rules-section">
+                    <label class="rules-checkbox">
+                        <input type="checkbox" id="rulesAccepted" required>
+                        <span>С правилами ознакомлен(а) ✅</span>
+                    </label>
+                    <button type="button" class="btn-secondary" onclick="showScreen(3)">Правила</button>
+                </div>
+
+                <button type="submit" class="btn-primary">Готово</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Окно 3 - Правила -->
+    <div id="screen3" class="screen">
+        <div class="container">
+            <h2>Правила</h2>
+            <div class="rules-content">
+                <div class="rule-item">
+                    <h3>1. Правила:</h3>
+                    <p>Уважайте друг друга, соблюдайте законность, помогайте с добротой и ответственностью.</p>
+                </div>
+                <div class="rule-item">
+                    <h3>2. Соглашение:</h3>
+                    <p>Участвуя в мероприятиях, вы соглашаетесь с условиями платформы и берете на себя ответственность за свои действия.</p>
+                </div>
+                <div class="rule-item">
+                    <h3>3. Техподдержка:</h3>
+                    <p>При возникновении вопросов обращайтесь в службу поддержки через WhatsApp: +7(XXX)XXX-XX-XX</p>
+                </div>
+            </div>
+            <button class="btn-primary" onclick="showScreen(2)">Назад</button>
+        </div>
+    </div>
+
+    <!-- Окно 4 - Личный кабинет -->
+    <div id="screen4" class="screen">
+        <div class="container">
+            <h2>Мой кабинет</h2>
+            <div class="profile-info" id="profileInfo">
+                <!-- Данные пользователя будут загружены через JavaScript -->
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn-action" onclick="showScreen(5)">
+                    <span class="btn-icon">📅</span>
+                    Организовать мероприятие
+                </button>
+                <button class="btn-action" onclick="showEventsList()">
+                    <span class="btn-icon">👥</span>
+                    Участвовать
+                </button>
+                <button class="btn-action" onclick="showScreen(6)">
+                    <span class="btn-icon">📝</span>
+                    Отчитаться
+                </button>
+                <button class="btn-secondary" onclick="showScreen(2)">Редактировать</button>
+            </div>
+
+            <div class="news-chat">
+                <h3>Общий чат новостей</h3>
+                <div class="chat-messages" id="chatMessages">
+                    <!-- Сообщения будут загружены через JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Окно 5 - Организовать мероприятие -->
+    <div id="screen5" class="screen">
+        <div class="container">
+            <h2>Организовать мероприятие</h2>
+            <form id="eventForm">
+                <div class="form-group">
+                    <input type="text" id="eventTitle" placeholder="Название мероприятия" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="eventPhoto">Фото / картинка</label>
+                    <input type="file" id="eventPhoto" accept="image/*">
+                    <div class="photo-preview" id="eventPhotoPreview"></div>
+                </div>
+
+                <div class="form-group">
+                    <textarea id="eventDescription" placeholder="Направление и описание (что делать, кому помочь, сколько волонтёров нужно, что взять)" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <input type="datetime-local" id="eventDateTime" required>
+                </div>
+
+                <div class="form-group">
+                    <input type="text" id="eventAddress" placeholder="Адрес и геолокация" required>
+                </div>
+
+                <button type="submit" class="btn-primary">Готово</button>
+                <button type="button" class="btn-secondary" onclick="showScreen(4)">Назад</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Окно 6 - Отчёт -->
+    <div id="screen6" class="screen">
+        <div class="container">
+            <h2>Отчёт</h2>
+            <form id="reportForm">
+                <div class="form-group">
+                    <input type="text" id="reportTitle" placeholder="Название мероприятия" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="reportPhotos">Фото (до 6 шт.) — до / после, процесс мероприятия, команда</label>
+                    <input type="file" id="reportPhotos" accept="image/*" multiple>
+                    <div class="photos-preview" id="reportPhotosPreview"></div>
+                </div>
+
+                <div class="form-group">
+                    <input type="text" id="participants" placeholder="Отметить участников">
+                </div>
+
+                <div class="form-group">
+                    <textarea id="reportDescription" placeholder="Описание проделанной работы" required></textarea>
+                </div>
+
+                <button type="submit" class="btn-primary">Готово</button>
+                <button type="button" class="btn-secondary" onclick="showScreen(4)">Назад</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно для списка мероприятий -->
+    <div id="eventsModal" class="modal">
+        <div class="modal-content">
+            <h2>Доступные мероприятия</h2>
+            <div class="events-list" id="eventsList">
+                <!-- Список мероприятий будет загружен через JavaScript -->
+            </div>
+            <button class="btn-secondary" onclick="closeEventsModal()">Закрыть</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
